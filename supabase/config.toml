@@ -1,0 +1,22 @@
+project_id = "xtouspjdsbygzrkomsjy"
+
+[functions.chat-with-joy]
+verify_jwt = true
+
+[functions.mpesa-stk-push]
+verify_jwt = true
+
+[functions.mpesa-callback]
+verify_jwt = false
+
+[functions.process-investment-earnings]
+verify_jwt = false
+
+[functions.send-withdrawal-notification]
+verify_jwt = true
+
+[functions.send-deposit-notification]
+verify_jwt = true
+
+[functions.send-referral-notification]
+verify_jwt = true
