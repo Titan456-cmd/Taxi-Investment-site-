@@ -1,152 +1,664 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="description" content="Kinya Drive Cash – Smart cash & expense tracker for drivers, boda bodas, matatus, and transport businesses in Kenya."/>
-    <title>Kinya Drive Cash | Cash Management for Kenyan Drivers</title>
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinya Drive Cash - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Reset and Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0f5132, #198754);
+            background-color: #0f172a; /* Dark Navy Background */
+            color: #e2e8f0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Layout Grid */
+        .app-container {
+            display: grid;
+            grid-template-columns: 250px 1fr 300px; /* Sidebar | Main | Right Panel */
+            height: 100vh;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            background-color: #0f172a;
+            border-right: 1px solid #1e293b;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            color: #3b82f6;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #94a3b8;
+            padding: 12px;
+            border-radius: 8px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: #1e293b;
+            color: #3b82f6;
+        }
+
+        .sidebar-footer {
+            border-top: 1px solid #1e293b;
+            padding-top: 20px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            background-color: #7f1d1d;
             color: white;
-            min-height: 100vh;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            gap: 8px;
         }
 
-        .container {
-            max-width: 900px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 50px 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        /* --- Main Content --- */
+        .main-content {
+            padding: 30px;
+            overflow-y: auto;
+            background-color: #0f172a;
         }
 
-        h1 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .tagline {
-            font-size: 1.4rem;
+        header {
             margin-bottom: 30px;
-            opacity: 0.95;
-        }
-
-        .features {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            margin: 40px 0;
-        }
-
-        .feature-card {
-            background: rgba(255, 255, 255, 0.15);
+            background: #3b82f6;
             padding: 20px;
             border-radius: 12px;
-            width: 220px;
-            backdrop-filter: blur(5px);
         }
 
-        .feature-card h3 {
+        header h1 { font-size: 1.5rem; color: white; }
+        header p { color: #dbeafe; font-size: 0.9rem; }
+
+        /* Stats Row */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #94a3b8;
             margin-bottom: 10px;
-            font-size: 1.3rem;
         }
 
-        .coming-soon {
-            font-size: 2rem;
-            margin: 40px 0;
-            font-weight: 600;
-            color: #ffd700;
-        }
-
-        .btn {
-            display: inline-block;
-            background: #ffd700;
-            color: #0f5132;
+        .stat-value {
+            font-size: 1.5rem;
             font-weight: bold;
-            padding: 15px 40px;
-            border-radius: 50px;
-            text-decoration: none;
+        }
+
+        .blue-text { color: #3b82f6; }
+        .green-text { color: #22c55e; }
+        .white-text { color: white; }
+
+        /* Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-secondary {
+            background-color: #1e293b;
+            color: white;
+            border: 1px solid #334155;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Investment Grid */
+        .investment-section h3 { margin-bottom: 5px; }
+        .investment-section p { color: #94a3b8; margin-bottom: 20px; font-size: 0.9rem; }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .plan-card {
+            background-color: #1e293b;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid #334155;
+            position: relative;
+        }
+
+        .taxi-icon {
+            background: #0f172a;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3b82f6;
             font-size: 1.2rem;
-            margin: 20px 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .btn:hover {
-            background: white;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-
-        .live-btn {
-            background: white;
-            color: #198754;
-        }
-
-        footer {
-            margin-top: 60px;
+        .plan-details {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
             font-size: 0.9rem;
-            opacity: 0.8;
         }
 
-        @media (max-width: 768px) {
-            h1 { font-size: 2.5rem; }
-            .tagline { font-size: 1.2rem; }
-            .features { flex-direction: column; align-items: center; }
-            .feature-card { width: 90%; }
+        .roi-badge {
+            background-color: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 10px 0;
+        }
+
+        .btn-plan {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 15px;
+            background-color: #334155;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .error-text {
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 5px;
+        }
+
+        /* --- Right Panel --- */
+        .right-panel {
+            background-color: #0f172a;
+            border-left: 1px solid #1e293b;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .right-panel h3 { font-size: 1rem; margin-bottom: 5px; }
+        .subtext { font-size: 0.8rem; color: #94a3b8; margin-bottom: 20px; }
+
+        .active-card {
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #334155;
+        }
+
+        .ac-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+        }
+
+        .days-left { background: #334155; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; }
+
+        .progress-bar {
+            height: 4px;
+            background: #334155;
+            border-radius: 2px;
+            margin-bottom: 8px;
+        }
+
+        .ac-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+
+        .earned { color: #22c55e; }
+
+        .hourly-section {
+            margin-top: 40px;
+        }
+
+        .total-hourly {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .total-hourly h2 { color: #22c55e; }
+
+        .hourly-item {
+            background: #1e293b;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .profit { color: #22c55e; }
+
+        .referral-section {
+            margin-top: 40px;
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .ref-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .btn-details {
+            width: 100%;
+            background: transparent;
+            border: 1px solid #334155;
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 200px 1fr;
+            }
+            .right-panel { display: none; }
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <h1>Kinya Drive Cash</h1>
-        <p class="tagline">Smart Cash & Expense Tracker for Kenyan Drivers, Boda Bodas, Matatus & Transport Saccos</p>
-
-        <div class="features">
-            <div class="feature-card">
-                <h3>Daily Earnings</h3>
-                <p>Track money collected per trip instantly</p>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo-section">
+                <i class="fa-solid fa-taxi"></i>
+                <h2>Kinya Drive Cash</h2>
             </div>
-            <div class="feature-card">
-                <h3>Fuel & Expenses</h3>
-                <p>Log fuel, repairs, and maintenance costs</p>
+            
+            <nav class="nav-links">
+                <a href="#" class="active"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
+                <a href="#"><i class="fa-solid fa-chart-line"></i> Invest</a>
+                <a href="#"><i class="fa-solid fa-wallet"></i> Deposit</a>
+                <a href="#"><i class="fa-solid fa-arrow-up-right-from-square"></i> Withdraw</a>
+                <a href="#"><i class="fa-solid fa-users"></i> Referrals</a>
+                <a href="#"><i class="fa-solid fa-clock-rotate-left"></i> History</a>
+                <a href="#"><i class="fa-solid fa-user"></i> Profile</a>
+                <a href="#"><i class="fa-solid fa-circle-info"></i> About Us</a>
+                <a href="#"><i class="fa-solid fa-headset"></i> Support</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="theme-toggle">
+                    <i class="fa-solid fa-sun"></i> Light Mode
+                </div>
+                <button class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
             </div>
-            <div class="feature-card">
-                <h3>AI Reports</h3>
-                <p>Get weekly/monthly profit insights</p>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1>Welcome back, Victo JOakim!</h1>
+                <p>Your taxi investment portfolio</p>
+            </header>
+
+            <section class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span>Deposit Wallet</span>
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <div class="stat-value blue-text">KES 50</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span>Earnings Wallet</span>
+                        <i class="fa-solid fa-chart-simple"></i>
+                    </div>
+                    <div class="stat-value green-text">KES 0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span>Total Balance</span>
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                    </div>
+                    <div class="stat-value white-text">KES 50</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span>Withdrawable</span>
+                        <i class="fa-solid fa-money-bill"></i>
+                    </div>
+                    <div class="stat-value white-text">KES 50</div>
+                    <small>Deposit + Earnings</small>
+                </div>
+            </section>
+
+            <div class="action-buttons">
+                <button class="btn-primary"><i class="fa-solid fa-plus"></i> Deposit Funds</button>
+                <button class="btn-secondary"><i class="fa-solid fa-arrow-up"></i> Withdraw</button>
             </div>
-        </div>
 
-        <div class="coming-soon">Launching Very Soon!</div>
+            <section class="investment-section">
+                <h3><i class="fa-solid fa-car"></i> Quick Invest - Top Taxis</h3>
+                <p>Start earning with these popular taxi plans</p>
 
-        <a href="https://kinya-drive-cash.lovable.app" class="btn live-btn">View Live Demo</a>
-        <a href="mailto:hello@kinyadrivecash.com" class="btn">Get Early Access</a>
+                <div class="plans-grid">
+                    <div class="plan-card">
+                        <div class="taxi-icon"><i class="fa-solid fa-taxi"></i></div>
+                        <h4>British Classic Taxi</h4>
+                        <p class="plan-code">Taxi A</p>
+                        
+                        <div class="plan-details">
+                            <div>
+                                <span>Deposit</span>
+                                <span class="blue-text">KES 200</span>
+                            </div>
+                            <div>
+                                <span>Daily</span>
+                                <span class="green-text">KES 50</span>
+                            </div>
+                        </div>
 
-        <footer>
-            &copy; 2025 Kinya Drive Cash • Made with ❤️ in Kenya • Powered by Lovable.app
-        </footer>
+                        <div class="plan-duration">
+                            <i class="fa-regular fa-clock"></i> 30 Days Duration
+                        </div>
+                        <div class="roi-badge">750% ROI</div>
+
+                        <div class="total-earnings">
+                            Total Earnings: <span class="green-text">KES 1,500</span>
+                        </div>
+
+                        <button class="btn-plan" disabled>Insufficient Balance</button>
+                        <p class="error-text">Need KES 150 more</p>
+                    </div>
+
+                    <div class="plan-card">
+                        <div class="taxi-icon"><i class="fa-solid fa-car-side"></i></div>
+                        <h4>American Modern Taxi</h4>
+                        <p class="plan-code">Taxi B</p>
+                        
+                        <div class="plan-details">
+                            <div>
+                                <span>Deposit</span>
+                                <span class="blue-text">KES 500</span>
+                            </div>
+                            <div>
+                                <span>Daily</span>
+                                <span class="green-text">KES 100</span>
+                            </div>
+                        </div>
+
+                        <div class="plan-duration">
+                            <i class="fa-regular fa-clock"></i> 30 Days Duration
+                        </div>
+                        <div class="roi-badge green">600% ROI</div>
+
+                        <div class="total-earnings">
+                            Total Earnings: <span class="green-text">KES 3,000</span>
+                        </div>
+
+                        <button class="btn-plan" disabled>Insufficient Balance</button>
+                        <p class="error-text">Need KES 450 more</p>
+                    </div>
+
+                    <div class="plan-card">
+                        <div class="taxi-icon"><i class="fa-solid fa-bolt"></i></div>
+                        <h4>Electric Eco Taxi</h4>
+                        <p class="plan-code">Taxi C</p>
+                        
+                        <div class="plan-details">
+                            <div>
+                                <span>Deposit</span>
+                                <span class="blue-text">KES 700</span>
+                            </div>
+                            <div>
+                                <span>Daily</span>
+                                <span class="green-text">KES 120</span>
+                            </div>
+                        </div>
+
+                        <div class="plan-duration">
+                            <i class="fa-regular fa-clock"></i> 30 Days Duration
+                        </div>
+                        <div class="roi-badge">514% ROI</div>
+
+                        <div class="total-earnings">
+                            Total Earnings: <span class="green-text">KES 3,600</span>
+                        </div>
+
+                        <button class="btn-plan" disabled>Insufficient Balance</button>
+                        <p class="error-text">Need KES 650 more</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <aside class="right-panel">
+            <h3>Active Plans</h3>
+            <p class="subtext">Your current investments</p>
+
+            <div class="active-plans-list">
+                <div class="active-card">
+                    <div class="ac-header">
+                        <span>British Classic Taxi</span>
+                        <span class="days-left">30 days left</span>
+                    </div>
+                    <div class="progress-bar"><div class="fill" style="width: 0%"></div></div>
+                    <div class="ac-footer">
+                        <span>Day 0 of 30</span>
+                        <span class="earned">Earned: KES 0</span>
+                    </div>
+                </div>
+                </div>
+
+            <div class="hourly-section">
+                <h3><i class="fa-regular fa-clock"></i> Hourly Earnings</h3>
+                <p class="subtext">Breakdown by active investment</p>
+                
+                <div class="total-hourly">
+                    <h2>KES 15.42</h2>
+                    <span>Total per hour</span>
+                </div>
+
+                <div class="hourly-list">
+                    <div class="hourly-item">
+                        <div>
+                            <strong>British Classic Taxi</strong>
+                            <small>KES 50/day</small>
+                        </div>
+                        <span class="profit">+KES 2.08/hr</span>
+                    </div>
+                     <div class="hourly-item">
+                        <div>
+                            <strong>Electric Eco Taxi</strong>
+                            <small>KES 120/day</small>
+                        </div>
+                        <span class="profit">+KES 5.00/hr</span>
+                    </div>
+                </div>
+            </div>
+
+             <div class="referral-section">
+                <h3>Referral Earnings</h3>
+                <div class="ref-row">
+                    <span>Level A (10%)</span>
+                    <span class="green-text">KES 0</span>
+                </div>
+                <div class="ref-row">
+                    <span>Level B (5%)</span>
+                    <span class="green-text">KES 0</span>
+                </div>
+                <div class="ref-row">
+                    <span>Level C (3%)</span>
+                    <span class="green-text">KES 0</span>
+                </div>
+                <hr>
+                 <div class="ref-row">
+                    <strong>Total</strong>
+                    <span class="green-text">KES 0</span>
+                </div>
+                <button class="btn-details">View Details</button>
+            </div>
+        </aside>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 1. Sidebar Navigation Handling ---
+            const navLinks = document.querySelectorAll('.nav-links a');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent actual navigation for this demo
+                    
+                    // Remove 'active' class from all links
+                    navLinks.forEach(nav => nav.classList.remove('active'));
+                    
+                    // Add 'active' class to clicked link
+                    link.classList.add('active');
+                });
+            });
+
+            // --- 2. Button Interactions ---
+            const depositBtn = document.querySelector('.btn-primary');
+            const withdrawBtn = document.querySelector('.btn-secondary');
+            const planButtons = document.querySelectorAll('.btn-plan');
+
+            // Simulate button clicks
+            if(depositBtn) {
+                depositBtn.addEventListener('click', () => {
+                    alert("Deposit Feature: Opens payment gateway (Demo Only)");
+                });
+            }
+
+            if(withdrawBtn) {
+                withdrawBtn.addEventListener('click', () => {
+                    alert("Withdraw Feature: Checks withdrawable balance (Demo Only)");
+                });
+            }
+
+            // Handle "Insufficient Balance" buttons
+            planButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Check if button is disabled
+                    if (btn.hasAttribute('disabled')) {
+                        // Find the error text immediately following the button
+                        const errorText = btn.nextElementSibling;
+                        if(errorText && errorText.classList.contains('error-text')) {
+                            // Shake animation effect for error
+                            errorText.style.transform = "translateX(5px)";
+                            setTimeout(() => {
+                                 errorText.style.transform = "translateX(-5px)";
+                            }, 100);
+                            setTimeout(() => {
+                                 errorText.style.transform = "translateX(0)";
+                            }, 200);
+                        }
+                    }
+                });
+            });
+
+            // --- 3. Theme Toggle (Visual Only) ---
+            const themeToggle = document.querySelector('.theme-toggle');
+            let isDarkMode = true;
+
+            if(themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    isDarkMode = !isDarkMode;
+                    const icon = themeToggle.querySelector('i');
+                    
+                    if (isDarkMode) {
+                        document.body.style.backgroundColor = "#0f172a";
+                        icon.classList.remove('fa-moon');
+                        icon.classList.add('fa-sun');
+                        themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i> Light Mode';
+                    } else {
+                        // Simple light mode simulation
+                        document.body.style.backgroundColor = "#f1f5f9";
+                        themeToggle.innerHTML = '<i class="fa-solid fa-moon"></i> Dark Mode';
+                        alert("Light mode is just a demo toggle in this version!");
+                    }
+                });
+            }
+
+            // --- 4. Live Earnings Simulation ---
+            // This makes the numbers tick up slightly to mimic a 'live' dashboard
+            const earningsDisplay = document.querySelector('.hourly-section h2'); // The KES 15.42 element
+            
+            if(earningsDisplay) {
+                let currentEarnings = 15.42;
+                
+                setInterval(() => {
+                    // Increase earnings by a tiny random amount every 3 seconds
+                    const increment = Math.random() * 0.01;
+                    currentEarnings += increment;
+                    earningsDisplay.textContent = `KES ${currentEarnings.toFixed(2)}`;
+                }, 3000);
+            }
+        });
+    </script>
 </body>
 </html>
