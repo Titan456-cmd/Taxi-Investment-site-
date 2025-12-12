@@ -15,7 +15,7 @@
         }
 
         body {
-            background-color: #0f172a; /* Dark Navy Background */
+            background-color: #0f172a;
             color: #e2e8f0;
             height: 100vh;
             overflow: hidden;
@@ -24,8 +24,13 @@
         /* Layout Grid */
         .app-container {
             display: grid;
-            grid-template-columns: 250px 1fr 300px; /* Sidebar | Main | Right Panel */
+            grid-template-columns: 250px 1fr;
             height: 100vh;
+            transition: grid-template-columns 0.3s;
+        }
+
+        .right-panel-visible {
+            grid-template-columns: 250px 1fr 300px;
         }
 
         /* --- Sidebar --- */
@@ -35,6 +40,7 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
+            z-index: 100;
         }
 
         .logo-section {
@@ -43,6 +49,16 @@
             gap: 10px;
             margin-bottom: 40px;
             color: #3b82f6;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-left: auto;
         }
 
         .nav-links {
@@ -73,19 +89,29 @@
             padding-top: 20px;
         }
 
-        .logout-btn {
+        .theme-toggle, .logout-btn {
             width: 100%;
-            background-color: #7f1d1d;
+            background-color: #1e293b;
             color: white;
-            border: none;
+            border: 1px solid #334155;
             padding: 10px;
             border-radius: 6px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .theme-toggle:hover, .logout-btn:hover {
+            background-color: #334155;
+        }
+
+        .logout-btn {
+            background-color: #7f1d1d;
+            border: none;
         }
 
         /* --- Main Content --- */
@@ -93,22 +119,37 @@
             padding: 30px;
             overflow-y: auto;
             background-color: #0f172a;
+            position: relative;
         }
 
-        header {
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 30px;
             background: #3b82f6;
             padding: 20px;
             border-radius: 12px;
         }
 
-        header h1 { font-size: 1.5rem; color: white; }
-        header p { color: #dbeafe; font-size: 0.9rem; }
+        .page-header h1 { font-size: 1.5rem; color: white; }
+        .page-header p { color: #dbeafe; font-size: 0.9rem; }
+        .right-panel-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
         /* Stats Row */
         .stats-row {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -118,6 +159,11 @@
             padding: 20px;
             border-radius: 12px;
             border: 1px solid #334155;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
         }
 
         .stat-header {
@@ -135,51 +181,91 @@
 
         .blue-text { color: #3b82f6; }
         .green-text { color: #22c55e; }
+        .red-text { color: #ef4444; }
         .white-text { color: white; }
+        .yellow-text { color: #f59e0b; }
 
         /* Buttons */
         .action-buttons {
             display: flex;
             gap: 15px;
             margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary, .btn-secondary, .btn-success, .btn-danger {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
         }
 
         .btn-primary {
             background-color: #3b82f6;
             color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
         }
 
         .btn-secondary {
             background-color: #1e293b;
             color: white;
             border: 1px solid #334155;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
+        }
+
+        .btn-success {
+            background-color: #22c55e;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-primary:hover { background-color: #2563eb; }
+        .btn-secondary:hover { background-color: #334155; }
+        .btn-success:hover { background-color: #16a34a; }
+        .btn-danger:hover { background-color: #dc2626; }
+
+        /* Page Content */
+        .page-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Investment Grid */
-        .investment-section h3 { margin-bottom: 5px; }
-        .investment-section p { color: #94a3b8; margin-bottom: 20px; font-size: 0.9rem; }
-
-        .plans-grid {
+        .plans-grid, .history-grid, .referrals-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
+            margin-top: 20px;
         }
 
-        .plan-card {
+        .plan-card, .history-card, .referral-card, .profile-card {
             background-color: #1e293b;
             padding: 20px;
             border-radius: 16px;
-            text-align: center;
             border: 1px solid #334155;
             position: relative;
+            transition: all 0.3s;
+        }
+
+        .plan-card:hover, .history-card:hover, .referral-card:hover, .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
         .taxi-icon {
@@ -212,35 +298,134 @@
             margin: 10px 0;
         }
 
+        .roi-badge.red { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .roi-badge.blue { background-color: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+
         .btn-plan {
             width: 100%;
             padding: 10px;
             border-radius: 8px;
             border: none;
             margin-top: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-plan.enabled {
+            background-color: #22c55e;
+            color: white;
+        }
+
+        .btn-plan.disabled {
             background-color: #334155;
             color: #94a3b8;
             cursor: not-allowed;
         }
 
-        .error-text {
-            color: #ef4444;
-            font-size: 0.75rem;
-            margin-top: 5px;
+        .btn-plan.enabled:hover {
+            background-color: #16a34a;
         }
 
-        /* --- Right Panel --- */
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: #1e293b;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .data-table th, .data-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        .data-table th {
+            background-color: #334155;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .data-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-active { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .status-pending { background-color: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .status-completed { background-color: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .status-failed { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        /* Right Panel */
         .right-panel {
             background-color: #0f172a;
             border-left: 1px solid #1e293b;
             padding: 20px;
             overflow-y: auto;
+            position: fixed;
+            right: 0;
+            top: 0;
+            height: 100vh;
+            width: 300px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 90;
         }
 
-        .right-panel h3 { font-size: 1rem; margin-bottom: 5px; }
-        .subtext { font-size: 0.8rem; color: #94a3b8; margin-bottom: 20px; }
+        .right-panel.active {
+            transform: translateX(0);
+        }
 
-        .active-card {
+        .right-panel-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: none;
+        }
+
+        .active-card, .hourly-item, .referral-section {
             background: #1e293b;
             padding: 15px;
             border-radius: 8px;
@@ -258,10 +443,18 @@
         .days-left { background: #334155; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; }
 
         .progress-bar {
-            height: 4px;
+            height: 6px;
             background: #334155;
-            border-radius: 2px;
+            border-radius: 3px;
             margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #22c55e);
+            width: 0%;
+            transition: width 0.5s ease-in-out;
         }
 
         .ac-footer {
@@ -271,10 +464,10 @@
             color: #94a3b8;
         }
 
-        .earned { color: #22c55e; }
+        .earned { color: #22c55e; font-weight: bold; }
 
         .hourly-section {
-            margin-top: 40px;
+            margin-top: 30px;
         }
 
         .total-hourly {
@@ -284,23 +477,16 @@
         .total-hourly h2 { color: #22c55e; }
 
         .hourly-item {
-            background: #1e293b;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
         }
 
-        .profit { color: #22c55e; }
+        .profit { color: #22c55e; font-weight: bold; }
 
         .referral-section {
-            margin-top: 40px;
-            background: #1e293b;
-            padding: 15px;
-            border-radius: 12px;
+            margin-top: 30px;
         }
 
         .ref-row {
@@ -315,188 +501,714 @@
             background: transparent;
             border: 1px solid #334155;
             color: white;
-            padding: 8px;
+            padding: 10px;
             border-radius: 6px;
-            margin-top: 10px;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-details:hover {
+            background-color: #334155;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid #334155;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.5rem;
             cursor: pointer;
         }
 
-        /* Responsive */
-        @media (max-width: 1024px) {
+        /* Responsive Design */
+        @media (max-width: 1200px) {
             .app-container {
-                grid-template-columns: 200px 1fr;
+                grid-template-columns: 1fr;
             }
-            .right-panel { display: none; }
+            
+            .right-panel-visible {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: fixed;
+                left: -250px;
+                top: 0;
+                height: 100vh;
+                transition: left 0.3s ease-in-out;
+                z-index: 1000;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .right-panel-close {
+                display: block;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .plans-grid, .history-grid, .referrals-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <aside class="sidebar">
+    <div class="app-container" id="appContainer">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
             <div class="logo-section">
                 <i class="fa-solid fa-taxi"></i>
                 <h2>Kinya Drive Cash</h2>
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
             
             <nav class="nav-links">
-                <a href="#" class="active"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
-                <a href="#"><i class="fa-solid fa-chart-line"></i> Invest</a>
-                <a href="#"><i class="fa-solid fa-wallet"></i> Deposit</a>
-                <a href="#"><i class="fa-solid fa-arrow-up-right-from-square"></i> Withdraw</a>
-                <a href="#"><i class="fa-solid fa-users"></i> Referrals</a>
-                <a href="#"><i class="fa-solid fa-clock-rotate-left"></i> History</a>
-                <a href="#"><i class="fa-solid fa-user"></i> Profile</a>
-                <a href="#"><i class="fa-solid fa-circle-info"></i> About Us</a>
-                <a href="#"><i class="fa-solid fa-headset"></i> Support</a>
+                <a href="#" data-page="dashboard" class="active">
+                    <i class="fa-solid fa-table-columns"></i> Dashboard
+                </a>
+                <a href="#" data-page="invest">
+                    <i class="fa-solid fa-chart-line"></i> Invest
+                </a>
+                <a href="#" data-page="deposit">
+                    <i class="fa-solid fa-wallet"></i> Deposit
+                </a>
+                <a href="#" data-page="withdraw">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Withdraw
+                </a>
+                <a href="#" data-page="referrals">
+                    <i class="fa-solid fa-users"></i> Referrals
+                </a>
+                <a href="#" data-page="history">
+                    <i class="fa-solid fa-clock-rotate-left"></i> History
+                </a>
+                <a href="#" data-page="profile">
+                    <i class="fa-solid fa-user"></i> Profile
+                </a>
+                <a href="#" data-page="about">
+                    <i class="fa-solid fa-circle-info"></i> About Us
+                </a>
+                <a href="#" data-page="support">
+                    <i class="fa-solid fa-headset"></i> Support
+                </a>
             </nav>
 
             <div class="sidebar-footer">
-                <div class="theme-toggle">
+                <button class="theme-toggle" id="themeToggle">
                     <i class="fa-solid fa-sun"></i> Light Mode
-                </div>
-                <button class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+                </button>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                </button>
             </div>
         </aside>
 
+        <!-- Main Content -->
         <main class="main-content">
-            <header>
-                <h1>Welcome back, Victo JOakim!</h1>
-                <p>Your taxi investment portfolio</p>
-            </header>
-
-            <section class="stats-row">
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <span>Deposit Wallet</span>
-                        <i class="fa-solid fa-wallet"></i>
-                    </div>
-                    <div class="stat-value blue-text">KES 50</div>
+            <!-- Page Header -->
+            <div class="page-header">
+                <div>
+                    <h1 id="pageTitle">Welcome back, Victo JOakim!</h1>
+                    <p id="pageSubtitle">Your taxi investment portfolio</p>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <span>Earnings Wallet</span>
-                        <i class="fa-solid fa-chart-simple"></i>
-                    </div>
-                    <div class="stat-value green-text">KES 0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <span>Total Balance</span>
-                        <i class="fa-solid fa-arrow-trend-up"></i>
-                    </div>
-                    <div class="stat-value white-text">KES 50</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-header">
-                        <span>Withdrawable</span>
-                        <i class="fa-solid fa-money-bill"></i>
-                    </div>
-                    <div class="stat-value white-text">KES 50</div>
-                    <small>Deposit + Earnings</small>
-                </div>
-            </section>
-
-            <div class="action-buttons">
-                <button class="btn-primary"><i class="fa-solid fa-plus"></i> Deposit Funds</button>
-                <button class="btn-secondary"><i class="fa-solid fa-arrow-up"></i> Withdraw</button>
+                <button class="right-panel-toggle" id="rightPanelToggle">
+                    <i class="fa-solid fa-chart-simple"></i> Quick Stats
+                </button>
             </div>
 
-            <section class="investment-section">
-                <h3><i class="fa-solid fa-car"></i> Quick Invest - Top Taxis</h3>
-                <p>Start earning with these popular taxi plans</p>
+            <!-- Dashboard Page -->
+            <div class="page-content active" id="dashboard">
+                <section class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>Deposit Wallet</span>
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+                        <div class="stat-value blue-text">KES 50</div>
+                        <small>Available for investment</small>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>Earnings Wallet</span>
+                            <i class="fa-solid fa-chart-simple"></i>
+                        </div>
+                        <div class="stat-value green-text">KES 0</div>
+                        <small>From investments</small>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>Total Balance</span>
+                            <i class="fa-solid fa-arrow-trend-up"></i>
+                        </div>
+                        <div class="stat-value white-text">KES 50</div>
+                        <small>All accounts</small>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>Withdrawable</span>
+                            <i class="fa-solid fa-money-bill"></i>
+                        </div>
+                        <div class="stat-value white-text">KES 50</div>
+                        <small>Deposit + Earnings</small>
+                    </div>
+                </section>
+
+                <div class="action-buttons">
+                    <button class="btn-primary" id="depositBtn">
+                        <i class="fa-solid fa-plus"></i> Deposit Funds
+                    </button>
+                    <button class="btn-secondary" id="withdrawBtn">
+                        <i class="fa-solid fa-arrow-up"></i> Withdraw
+                    </button>
+                    <button class="btn-success" id="inviteBtn">
+                        <i class="fa-solid fa-user-plus"></i> Invite Friends
+                    </button>
+                </div>
+
+                <section class="investment-section">
+                    <h3><i class="fa-solid fa-car"></i> Quick Invest - Top Taxis</h3>
+                    <p>Start earning with these popular taxi plans</p>
+
+                    <div class="plans-grid">
+                        <div class="plan-card">
+                            <div class="taxi-icon"><i class="fa-solid fa-taxi"></i></div>
+                            <h4>British Classic Taxi</h4>
+                            <p class="plan-code">Taxi A</p>
+                            
+                            <div class="plan-details">
+                                <div>
+                                    <span>Deposit</span>
+                                    <span class="blue-text">KES 200</span>
+                                </div>
+                                <div>
+                                    <span>Daily</span>
+                                    <span class="green-text">KES 50</span>
+                                </div>
+                            </div>
+
+                            <div class="plan-duration">
+                                <i class="fa-regular fa-clock"></i> 30 Days Duration
+                            </div>
+                            <div class="roi-badge">750% ROI</div>
+
+                            <div class="total-earnings">
+                                Total Earnings: <span class="green-text">KES 1,500</span>
+                            </div>
+
+                            <button class="btn-plan disabled" data-plan="taxi-a">
+                                Insufficient Balance
+                            </button>
+                            <p class="error-text">Need KES 150 more</p>
+                        </div>
+
+                        <div class="plan-card">
+                            <div class="taxi-icon"><i class="fa-solid fa-car-side"></i></div>
+                            <h4>American Modern Taxi</h4>
+                            <p class="plan-code">Taxi B</p>
+                            
+                            <div class="plan-details">
+                                <div>
+                                    <span>Deposit</span>
+                                    <span class="blue-text">KES 500</span>
+                                </div>
+                                <div>
+                                    <span>Daily</span>
+                                    <span class="green-text">KES 100</span>
+                                </div>
+                            </div>
+
+                            <div class="plan-duration">
+                                <i class="fa-regular fa-clock"></i> 30 Days Duration
+                            </div>
+                            <div class="roi-badge green">600% ROI</div>
+
+                            <div class="total-earnings">
+                                Total Earnings: <span class="green-text">KES 3,000</span>
+                            </div>
+
+                            <button class="btn-plan disabled" data-plan="taxi-b">
+                                Insufficient Balance
+                            </button>
+                            <p class="error-text">Need KES 450 more</p>
+                        </div>
+
+                        <div class="plan-card">
+                            <div class="taxi-icon"><i class="fa-solid fa-bolt"></i></div>
+                            <h4>Electric Eco Taxi</h4>
+                            <p class="plan-code">Taxi C</p>
+                            
+                            <div class="plan-details">
+                                <div>
+                                    <span>Deposit</span>
+                                    <span class="blue-text">KES 700</span>
+                                </div>
+                                <div>
+                                    <span>Daily</span>
+                                    <span class="green-text">KES 120</span>
+                                </div>
+                            </div>
+
+                            <div class="plan-duration">
+                                <i class="fa-regular fa-clock"></i> 30 Days Duration
+                            </div>
+                            <div class="roi-badge">514% ROI</div>
+
+                            <div class="total-earnings">
+                                Total Earnings: <span class="green-text">KES 3,600</span>
+                            </div>
+
+                            <button class="btn-plan disabled" data-plan="taxi-c">
+                                Insufficient Balance
+                            </button>
+                            <p class="error-text">Need KES 650 more</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Invest Page -->
+            <div class="page-content" id="invest">
+                <h2><i class="fa-solid fa-chart-line"></i> Investment Plans</h2>
+                <p class="subtext">Choose from our verified taxi investment plans</p>
+                
+                <div class="action-buttons">
+                    <button class="btn-primary" id="filterAll">All Plans</button>
+                    <button class="btn-secondary" id="filterPopular">Popular</button>
+                    <button class="btn-secondary" id="filterHighROI">High ROI</button>
+                    <button class="btn-secondary" id="filterLowRisk">Low Risk</button>
+                </div>
 
                 <div class="plans-grid">
-                    <div class="plan-card">
-                        <div class="taxi-icon"><i class="fa-solid fa-taxi"></i></div>
-                        <h4>British Classic Taxi</h4>
-                        <p class="plan-code">Taxi A</p>
-                        
-                        <div class="plan-details">
-                            <div>
-                                <span>Deposit</span>
-                                <span class="blue-text">KES 200</span>
-                            </div>
-                            <div>
-                                <span>Daily</span>
-                                <span class="green-text">KES 50</span>
-                            </div>
-                        </div>
+                    <!-- More investment plans will be loaded here -->
+                </div>
+            </div>
 
-                        <div class="plan-duration">
-                            <i class="fa-regular fa-clock"></i> 30 Days Duration
+            <!-- Deposit Page -->
+            <div class="page-content" id="deposit">
+                <h2><i class="fa-solid fa-wallet"></i> Deposit Funds</h2>
+                <p class="subtext">Add funds to your wallet to start investing</p>
+                
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>Minimum Deposit</span>
+                            <i class="fa-solid fa-arrow-down"></i>
                         </div>
-                        <div class="roi-badge">750% ROI</div>
-
-                        <div class="total-earnings">
-                            Total Earnings: <span class="green-text">KES 1,500</span>
-                        </div>
-
-                        <button class="btn-plan" disabled>Insufficient Balance</button>
-                        <p class="error-text">Need KES 150 more</p>
+                        <div class="stat-value blue-text">KES 200</div>
                     </div>
-
-                    <div class="plan-card">
-                        <div class="taxi-icon"><i class="fa-solid fa-car-side"></i></div>
-                        <h4>American Modern Taxi</h4>
-                        <p class="plan-code">Taxi B</p>
-                        
-                        <div class="plan-details">
-                            <div>
-                                <span>Deposit</span>
-                                <span class="blue-text">KES 500</span>
-                            </div>
-                            <div>
-                                <span>Daily</span>
-                                <span class="green-text">KES 100</span>
-                            </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>Maximum Deposit</span>
+                            <i class="fa-solid fa-arrow-up"></i>
                         </div>
-
-                        <div class="plan-duration">
-                            <i class="fa-regular fa-clock"></i> 30 Days Duration
-                        </div>
-                        <div class="roi-badge green">600% ROI</div>
-
-                        <div class="total-earnings">
-                            Total Earnings: <span class="green-text">KES 3,000</span>
-                        </div>
-
-                        <button class="btn-plan" disabled>Insufficient Balance</button>
-                        <p class="error-text">Need KES 450 more</p>
+                        <div class="stat-value green-text">KES 50,000</div>
                     </div>
-
-                    <div class="plan-card">
-                        <div class="taxi-icon"><i class="fa-solid fa-bolt"></i></div>
-                        <h4>Electric Eco Taxi</h4>
-                        <p class="plan-code">Taxi C</p>
-                        
-                        <div class="plan-details">
-                            <div>
-                                <span>Deposit</span>
-                                <span class="blue-text">KES 700</span>
-                            </div>
-                            <div>
-                                <span>Daily</span>
-                                <span class="green-text">KES 120</span>
-                            </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>Processing Time</span>
+                            <i class="fa-solid fa-clock"></i>
                         </div>
-
-                        <div class="plan-duration">
-                            <i class="fa-regular fa-clock"></i> 30 Days Duration
-                        </div>
-                        <div class="roi-badge">514% ROI</div>
-
-                        <div class="total-earnings">
-                            Total Earnings: <span class="green-text">KES 3,600</span>
-                        </div>
-
-                        <button class="btn-plan" disabled>Insufficient Balance</button>
-                        <p class="error-text">Need KES 650 more</p>
+                        <div class="stat-value yellow-text">Instant</div>
                     </div>
                 </div>
-            </section>
+
+                <div class="deposit-form">
+                    <h3>Make a Deposit</h3>
+                    <div class="form-group">
+                        <label for="depositAmount">Amount (KES)</label>
+                        <input type="number" id="depositAmount" class="form-control" placeholder="Enter amount" min="200" max="50000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <div class="payment-methods">
+                            <button class="payment-method active" data-method="mpesa">
+                                <i class="fa-solid fa-mobile-alt"></i> M-Pesa
+                            </button>
+                            <button class="payment-method" data-method="card">
+                                <i class="fa-solid fa-credit-card"></i> Card
+                            </button>
+                            <button class="payment-method" data-method="bank">
+                                <i class="fa-solid fa-university"></i> Bank Transfer
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-primary btn-block" id="submitDeposit">
+                        <i class="fa-solid fa-lock"></i> Secure Deposit
+                    </button>
+                </div>
+            </div>
+
+            <!-- Withdraw Page -->
+            <div class="page-content" id="withdraw">
+                <h2><i class="fa-solid fa-arrow-up-right-from-square"></i> Withdraw Funds</h2>
+                <p class="subtext">Withdraw your earnings to your preferred method</p>
+                
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>Available Balance</span>
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+                        <div class="stat-value green-text">KES 50</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>Minimum Withdrawal</span>
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </div>
+                        <div class="stat-value blue-text">KES 100</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>Processing Time</span>
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div class="stat-value yellow-text">24-48 Hours</div>
+                    </div>
+                </div>
+
+                <div class="withdraw-form">
+                    <h3>Request Withdrawal</h3>
+                    <div class="form-group">
+                        <label for="withdrawAmount">Amount (KES)</label>
+                        <input type="number" id="withdrawAmount" class="form-control" placeholder="Enter amount" min="100" max="50">
+                        <small class="error-text" id="withdrawError">Minimum withdrawal is KES 100</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Withdrawal Method</label>
+                        <select id="withdrawMethod" class="form-control">
+                            <option value="mpesa">M-Pesa</option>
+                            <option value="bank">Bank Transfer</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn-primary btn-block" id="submitWithdraw" disabled>
+                        <i class="fa-solid fa-paper-plane"></i> Submit Request
+                    </button>
+                </div>
+            </div>
+
+            <!-- Referrals Page -->
+            <div class="page-content" id="referrals">
+                <h2><i class="fa-solid fa-users"></i> Referral Program</h2>
+                <p class="subtext">Earn commissions by inviting friends</p>
+                
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>Total Referrals</span>
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                        <div class="stat-value blue-text">0</div>
+                        <small>Active users</small>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>Referral Earnings</span>
+                            <i class="fa-solid fa-money-bill-wave"></i>
+                        </div>
+                        <div class="stat-value green-text">KES 0</div>
+                        <small>Total commissions</small>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span>Your Referral Link</span>
+                            <i class="fa-solid fa-link"></i>
+                        </div>
+                        <div class="stat-value white-text" style="font-size: 0.9rem; word-break: break-all;">
+                            https://kinya-drive-cash.lovable.app?ref=JOAKIM123
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-primary" id="copyReferralLink">
+                        <i class="fa-solid fa-copy"></i> Copy Link
+                    </button>
+                    <button class="btn-secondary" id="shareWhatsApp">
+                        <i class="fa-brands fa-whatsapp"></i> Share on WhatsApp
+                    </button>
+                    <button class="btn-secondary" id="shareTelegram">
+                        <i class="fa-brands fa-telegram"></i> Share on Telegram
+                    </button>
+                </div>
+
+                <h3>Referral Commission Structure</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Commission</th>
+                            <th>Requirements</th>
+                            <th>Your Earnings</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Level 1 (Direct)</td>
+                            <td class="green-text">10%</td>
+                            <td>Friend's first deposit</td>
+                            <td class="green-text">KES 0</td>
+                        </tr>
+                        <tr>
+                            <td>Level 2 (Indirect)</td>
+                            <td class="green-text">5%</td>
+                            <td>Friend of friend's deposit</td>
+                            <td class="green-text">KES 0</td>
+                        </tr>
+                        <tr>
+                            <td>Level 3 (Network)</td>
+                            <td class="green-text">3%</td>
+                            <td>Third level referrals</td>
+                            <td class="green-text">KES 0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- History Page -->
+            <div class="page-content" id="history">
+                <h2><i class="fa-solid fa-clock-rotate-left"></i> Transaction History</h2>
+                <p class="subtext">View all your transactions and investments</p>
+                
+                <div class="action-buttons">
+                    <button class="btn-primary" id="filterAllHistory">All</button>
+                    <button class="btn-secondary" id="filterDeposits">Deposits</button>
+                    <button class="btn-secondary" id="filterWithdrawals">Withdrawals</button>
+                    <button class="btn-secondary" id="filterInvestments">Investments</button>
+                    <button class="btn-secondary" id="filterEarnings">Earnings</button>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2024-01-15</td>
+                            <td>Deposit</td>
+                            <td>Initial deposit via M-Pesa</td>
+                            <td class="green-text">+KES 50</td>
+                            <td><span class="status-badge status-completed">Completed</span></td>
+                        </tr>
+                        <!-- More rows will be loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Profile Page -->
+            <div class="page-content" id="profile">
+                <h2><i class="fa-solid fa-user"></i> My Profile</h2>
+                <p class="subtext">Manage your account information</p>
+                
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <i class="fa-solid fa-user-circle"></i>
+                        </div>
+                        <div>
+                            <h3>Victo JOakim</h3>
+                            <p>Member since January 2024</p>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-details">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" class="form-control" value="Victo JOakim">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" class="form-control" value="victo@example.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" class="form-control" value="+254 700 000 000">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Country</label>
+                            <select class="form-control">
+                                <option>Kenya</option>
+                                <option>Tanzania</option>
+                                <option>Uganda</option>
+                                <option>Rwanda</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-primary">
+                        <i class="fa-solid fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+
+            <!-- About Us Page -->
+            <div class="page-content" id="about">
+                <h2><i class="fa-solid fa-circle-info"></i> About Kinya Drive Cash</h2>
+                
+                <div class="about-content">
+                    <div class="about-section">
+                        <h3>Our Mission</h3>
+                        <p>To democratize investment opportunities in the transportation sector by allowing individuals to invest in virtual taxis and earn daily returns.</p>
+                    </div>
+                    
+                    <div class="about-section">
+                        <h3>How It Works</h3>
+                        <p>1. Choose a taxi investment plan<br>
+                           2. Make your deposit<br>
+                           3. Earn daily returns for the plan duration<br>
+                           4. Withdraw your earnings anytime</p>
+                    </div>
+                    
+                    <div class="about-section">
+                        <h3>Why Choose Us?</h3>
+                        <p>✓ Transparent investment process<br>
+                           ✓ Daily returns paid directly to your wallet<br>
+                           ✓ 24/7 customer support<br>
+                           ✓ Secure and reliable platform<br>
+                           ✓ Multiple investment options</p>
+                    </div>
+                    
+                    <div class="about-section">
+                        <h3>Contact Information</h3>
+                        <p><i class="fa-solid fa-envelope"></i> support@kinyadrivecash.com<br>
+                           <i class="fa-solid fa-phone"></i> +254 700 123 456<br>
+                           <i class="fa-solid fa-clock"></i> Support: 24/7</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support Page -->
+            <div class="page-content" id="support">
+                <h2><i class="fa-solid fa-headset"></i> Support Center</h2>
+                <p class="subtext">We're here to help you 24/7</p>
+                
+                <div class="support-options">
+                    <div class="support-card">
+                        <i class="fa-solid fa-circle-question"></i>
+                        <h3>FAQs</h3>
+                        <p>Find answers to common questions</p>
+                        <button class="btn-secondary">View FAQs</button>
+                    </div>
+                    
+                    <div class="support-card">
+                        <i class="fa-solid fa-envelope"></i>
+                        <h3>Email Support</h3>
+                        <p>Contact us via email</p>
+                        <button class="btn-secondary">Send Email</button>
+                    </div>
+                    
+                    <div class="support-card">
+                        <i class="fa-solid fa-comments"></i>
+                        <h3>Live Chat</h3>
+                        <p>Chat with our support team</p>
+                        <button class="btn-primary">Start Chat</button>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>Send us a Message</h3>
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <select class="form-control">
+                            <option>Account Issues</option>
+                            <option>Investment Questions</option>
+                            <option>Withdrawal Help</option>
+                            <option>Technical Support</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea class="form-control" rows="5" placeholder="Describe your issue..."></textarea>
+                    </div>
+                    
+                    <button class="btn-primary">
+                        <i class="fa-solid fa-paper-plane"></i> Send Message
+                    </button>
+                </div>
+            </div>
         </main>
 
-        <aside class="right-panel">
+        <!-- Right Panel -->
+        <aside class="right-panel" id="rightPanel">
+            <button class="right-panel-close" id="rightPanelClose">
+                <i class="fa-solid fa-times"></i>
+            </button>
+            
             <h3>Active Plans</h3>
             <p class="subtext">Your current investments</p>
 
@@ -506,20 +1218,22 @@
                         <span>British Classic Taxi</span>
                         <span class="days-left">30 days left</span>
                     </div>
-                    <div class="progress-bar"><div class="fill" style="width: 0%"></div></div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="planProgress"></div>
+                    </div>
                     <div class="ac-footer">
-                        <span>Day 0 of 30</span>
+                        <span>Day <span id="currentDay">0</span> of 30</span>
                         <span class="earned">Earned: KES 0</span>
                     </div>
                 </div>
-                </div>
+            </div>
 
             <div class="hourly-section">
                 <h3><i class="fa-regular fa-clock"></i> Hourly Earnings</h3>
                 <p class="subtext">Breakdown by active investment</p>
                 
                 <div class="total-hourly">
-                    <h2>KES 15.42</h2>
+                    <h2 id="hourlyEarnings">KES 15.42</h2>
                     <span>Total per hour</span>
                 </div>
 
@@ -531,7 +1245,7 @@
                         </div>
                         <span class="profit">+KES 2.08/hr</span>
                     </div>
-                     <div class="hourly-item">
+                    <div class="hourly-item">
                         <div>
                             <strong>Electric Eco Taxi</strong>
                             <small>KES 120/day</small>
@@ -541,7 +1255,7 @@
                 </div>
             </div>
 
-             <div class="referral-section">
+            <div class="referral-section">
                 <h3>Referral Earnings</h3>
                 <div class="ref-row">
                     <span>Level A (10%)</span>
@@ -556,109 +1270,694 @@
                     <span class="green-text">KES 0</span>
                 </div>
                 <hr>
-                 <div class="ref-row">
+                <div class="ref-row">
                     <strong>Total</strong>
                     <span class="green-text">KES 0</span>
                 </div>
                 <button class="btn-details">View Details</button>
             </div>
         </aside>
+
+        <!-- Deposit Modal -->
+        <div class="modal" id="depositModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Confirm Deposit</h3>
+                    <button class="modal-close" id="depositModalClose">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+                <div id="depositModalContent">
+                    <!-- Content loaded dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification -->
+        <div class="notification" id="notification" style="display: none;">
+            <div class="notification-content"></div>
+        </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- 1. Sidebar Navigation Handling ---
-            const navLinks = document.querySelectorAll('.nav-links a');
+        // Application State
+        const appState = {
+            balance: 50,
+            earnings: 0,
+            activePage: 'dashboard',
+            isDarkMode: true,
+            rightPanelVisible: false,
+            sidebarVisible: false
+        };
 
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeNavigation();
+            initializeButtons();
+            initializeThemeToggle();
+            initializeEarningsSimulation();
+            initializeModals();
+            initializeRightPanel();
+            updateUI();
+        });
+
+        // Initialize Navigation
+        function initializeNavigation() {
+            const navLinks = document.querySelectorAll('.nav-links a');
+            const mobileToggle = document.getElementById('mobileToggle');
+            const sidebar = document.getElementById('sidebar');
+
+            // Page navigation
             navLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
-                    e.preventDefault(); // Prevent actual navigation for this demo
+                    e.preventDefault();
+                    const page = link.getAttribute('data-page');
+                    navigateToPage(page);
                     
-                    // Remove 'active' class from all links
+                    // Update active state
                     navLinks.forEach(nav => nav.classList.remove('active'));
-                    
-                    // Add 'active' class to clicked link
                     link.classList.add('active');
-                });
-            });
-
-            // --- 2. Button Interactions ---
-            const depositBtn = document.querySelector('.btn-primary');
-            const withdrawBtn = document.querySelector('.btn-secondary');
-            const planButtons = document.querySelectorAll('.btn-plan');
-
-            // Simulate button clicks
-            if(depositBtn) {
-                depositBtn.addEventListener('click', () => {
-                    alert("Deposit Feature: Opens payment gateway (Demo Only)");
-                });
-            }
-
-            if(withdrawBtn) {
-                withdrawBtn.addEventListener('click', () => {
-                    alert("Withdraw Feature: Checks withdrawable balance (Demo Only)");
-                });
-            }
-
-            // Handle "Insufficient Balance" buttons
-            planButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    // Check if button is disabled
-                    if (btn.hasAttribute('disabled')) {
-                        // Find the error text immediately following the button
-                        const errorText = btn.nextElementSibling;
-                        if(errorText && errorText.classList.contains('error-text')) {
-                            // Shake animation effect for error
-                            errorText.style.transform = "translateX(5px)";
-                            setTimeout(() => {
-                                 errorText.style.transform = "translateX(-5px)";
-                            }, 100);
-                            setTimeout(() => {
-                                 errorText.style.transform = "translateX(0)";
-                            }, 200);
-                        }
-                    }
-                });
-            });
-
-            // --- 3. Theme Toggle (Visual Only) ---
-            const themeToggle = document.querySelector('.theme-toggle');
-            let isDarkMode = true;
-
-            if(themeToggle) {
-                themeToggle.addEventListener('click', () => {
-                    isDarkMode = !isDarkMode;
-                    const icon = themeToggle.querySelector('i');
                     
-                    if (isDarkMode) {
-                        document.body.style.backgroundColor = "#0f172a";
-                        icon.classList.remove('fa-moon');
-                        icon.classList.add('fa-sun');
-                        themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i> Light Mode';
+                    // Close sidebar on mobile
+                    if (window.innerWidth <= 1200) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+
+            // Mobile sidebar toggle
+            mobileToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 1200 && 
+                    !sidebar.contains(e.target) && 
+                    !mobileToggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+
+        // Navigate to Page
+        function navigateToPage(page) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(p => {
+                p.classList.remove('active');
+            });
+
+            // Show selected page
+            const pageElement = document.getElementById(page);
+            if (pageElement) {
+                pageElement.classList.add('active');
+                appState.activePage = page;
+                
+                // Update page title
+                const titles = {
+                    dashboard: 'Dashboard',
+                    invest: 'Investment Plans',
+                    deposit: 'Deposit Funds',
+                    withdraw: 'Withdraw Funds',
+                    referrals: 'Referral Program',
+                    history: 'Transaction History',
+                    profile: 'My Profile',
+                    about: 'About Us',
+                    support: 'Support Center'
+                };
+                
+                document.getElementById('pageTitle').textContent = titles[page] || 'Dashboard';
+                document.getElementById('pageSubtitle').textContent = getPageSubtitle(page);
+                
+                // Initialize page-specific functionality
+                initializePage(page);
+            }
+        }
+
+        function getPageSubtitle(page) {
+            const subtitles = {
+                dashboard: 'Your taxi investment portfolio',
+                invest: 'Choose from our verified taxi investment plans',
+                deposit: 'Add funds to your wallet to start investing',
+                withdraw: 'Withdraw your earnings to your preferred method',
+                referrals: 'Earn commissions by inviting friends',
+                history: 'View all your transactions and investments',
+                profile: 'Manage your account information',
+                about: 'Learn more about Kinya Drive Cash',
+                support: "We're here to help you 24/7"
+            };
+            return subtitles[page] || 'Kinya Drive Cash Platform';
+        }
+
+        // Initialize Page-Specific Functionality
+        function initializePage(page) {
+            switch(page) {
+                case 'dashboard':
+                    initializeDashboard();
+                    break;
+                case 'invest':
+                    initializeInvestPage();
+                    break;
+                case 'deposit':
+                    initializeDepositPage();
+                    break;
+                case 'withdraw':
+                    initializeWithdrawPage();
+                    break;
+                case 'referrals':
+                    initializeReferralsPage();
+                    break;
+                case 'history':
+                    initializeHistoryPage();
+                    break;
+                case 'profile':
+                    initializeProfilePage();
+                    break;
+                case 'support':
+                    initializeSupportPage();
+                    break;
+            }
+        }
+
+        // Initialize Dashboard
+        function initializeDashboard() {
+            // Investment plan buttons
+            document.querySelectorAll('.btn-plan').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.classList.contains('disabled')) {
+                        const errorText = this.nextElementSibling;
+                        if (errorText && errorText.classList.contains('error-text')) {
+                            // Shake animation
+                            errorText.style.transform = 'translateX(5px)';
+                            setTimeout(() => errorText.style.transform = 'translateX(-5px)', 100);
+                            setTimeout(() => errorText.style.transform = 'translateX(0)', 200);
+                        }
                     } else {
-                        // Simple light mode simulation
-                        document.body.style.backgroundColor = "#f1f5f9";
+                        const plan = this.getAttribute('data-plan');
+                        openDepositModal(plan);
+                    }
+                });
+            });
+        }
+
+        // Initialize Buttons
+        function initializeButtons() {
+            // Deposit button
+            document.getElementById('depositBtn')?.addEventListener('click', () => {
+                navigateToPage('deposit');
+            });
+
+            // Withdraw button
+            document.getElementById('withdrawBtn')?.addEventListener('click', () => {
+                navigateToPage('withdraw');
+            });
+
+            // Invite friends button
+            document.getElementById('inviteBtn')?.addEventListener('click', () => {
+                navigateToPage('referrals');
+                showNotification('Referral link copied to clipboard!', 'success');
+            });
+
+            // Logout button
+            document.getElementById('logoutBtn')?.addEventListener('click', () => {
+                if (confirm('Are you sure you want to log out?')) {
+                    showNotification('Logged out successfully!', 'info');
+                    // In a real app, this would redirect to login page
+                    setTimeout(() => {
+                        alert('Logout functionality - would redirect to login page');
+                    }, 1000);
+                }
+            });
+        }
+
+        // Initialize Theme Toggle
+        function initializeThemeToggle() {
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', () => {
+                    appState.isDarkMode = !appState.isDarkMode;
+                    
+                    if (appState.isDarkMode) {
+                        document.body.style.backgroundColor = '#0f172a';
+                        themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i> Light Mode';
+                        showNotification('Switched to dark mode', 'info');
+                    } else {
+                        document.body.style.backgroundColor = '#f1f5f9';
                         themeToggle.innerHTML = '<i class="fa-solid fa-moon"></i> Dark Mode';
-                        alert("Light mode is just a demo toggle in this version!");
+                        showNotification('Switched to light mode', 'info');
                     }
                 });
             }
+        }
 
-            // --- 4. Live Earnings Simulation ---
-            // This makes the numbers tick up slightly to mimic a 'live' dashboard
-            const earningsDisplay = document.querySelector('.hourly-section h2'); // The KES 15.42 element
+        // Initialize Earnings Simulation
+        function initializeEarningsSimulation() {
+            const earningsDisplay = document.getElementById('hourlyEarnings');
+            const planProgress = document.getElementById('planProgress');
+            const currentDay = document.getElementById('currentDay');
             
-            if(earningsDisplay) {
+            if (earningsDisplay && planProgress && currentDay) {
                 let currentEarnings = 15.42;
+                let currentDayCount = 0;
+                let progress = 0;
                 
+                // Update earnings every 5 seconds
                 setInterval(() => {
-                    // Increase earnings by a tiny random amount every 3 seconds
-                    const increment = Math.random() * 0.01;
+                    // Random increment
+                    const increment = Math.random() * 0.02;
                     currentEarnings += increment;
                     earningsDisplay.textContent = `KES ${currentEarnings.toFixed(2)}`;
-                }, 3000);
+                    
+                    // Simulate day progress
+                    if (progress < 100) {
+                        progress += 0.1;
+                        if (progress >= 100) progress = 100;
+                        planProgress.style.width = `${progress}%`;
+                        
+                        // Update day count (30 days total)
+                        currentDayCount = Math.floor((progress / 100) * 30);
+                        currentDay.textContent = currentDayCount;
+                    }
+                }, 5000);
             }
-        });
+        }
+
+        // Initialize Right Panel
+        function initializeRightPanel() {
+            const toggleBtn = document.getElementById('rightPanelToggle');
+            const closeBtn = document.getElementById('rightPanelClose');
+            const rightPanel = document.getElementById('rightPanel');
+            const appContainer = document.getElementById('appContainer');
+
+            toggleBtn?.addEventListener('click', () => {
+                rightPanel.classList.toggle('active');
+                appContainer.classList.toggle('right-panel-visible');
+                appState.rightPanelVisible = !appState.rightPanelVisible;
+            });
+
+            closeBtn?.addEventListener('click', () => {
+                rightPanel.classList.remove('active');
+                appContainer.classList.remove('right-panel-visible');
+                appState.rightPanelVisible = false;
+            });
+
+            // Close panel on mobile when clicking outside
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 1200 && 
+                    appState.rightPanelVisible &&
+                    !rightPanel.contains(e.target) && 
+                    !toggleBtn.contains(e.target)) {
+                    rightPanel.classList.remove('active');
+                    appContainer.classList.remove('right-panel-visible');
+                    appState.rightPanelVisible = false;
+                }
+            });
+        }
+
+        // Initialize Modals
+        function initializeModals() {
+            // Deposit modal
+            const depositModal = document.getElementById('depositModal');
+            const depositModalClose = document.getElementById('depositModalClose');
+
+            depositModalClose?.addEventListener('click', () => {
+                depositModal.classList.remove('active');
+            });
+
+            // Close modal when clicking outside
+            depositModal?.addEventListener('click', (e) => {
+                if (e.target === depositModal) {
+                    depositModal.classList.remove('active');
+                }
+            });
+        }
+
+        // Open Deposit Modal
+        function openDepositModal(plan) {
+            const modal = document.getElementById('depositModal');
+            const content = document.getElementById('depositModalContent');
+            
+            const planDetails = {
+                'taxi-a': {
+                    name: 'British Classic Taxi',
+                    deposit: 200,
+                    daily: 50,
+                    roi: '750%'
+                },
+                'taxi-b': {
+                    name: 'American Modern Taxi',
+                    deposit: 500,
+                    daily: 100,
+                    roi: '600%'
+                },
+                'taxi-c': {
+                    name: 'Electric Eco Taxi',
+                    deposit: 700,
+                    daily: 120,
+                    roi: '514%'
+                }
+            };
+            
+            const details = planDetails[plan] || planDetails['taxi-a'];
+            
+            content.innerHTML = `
+                <p>You are about to invest in:</p>
+                <h4>${details.name}</h4>
+                <div class="modal-details">
+                    <p><strong>Deposit Required:</strong> KES ${details.deposit}</p>
+                    <p><strong>Daily Earnings:</strong> KES ${details.daily}</p>
+                    <p><strong>ROI:</strong> ${details.roi}</p>
+                    <p><strong>Duration:</strong> 30 Days</p>
+                    <p><strong>Total Earnings:</strong> KES ${details.deposit * 7.5}</p>
+                </div>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <select class="form-control">
+                        <option>M-Pesa</option>
+                        <option>Card Payment</option>
+                        <option>Bank Transfer</option>
+                    </select>
+                </div>
+                <button class="btn-primary btn-block" id="confirmInvestment">
+                    <i class="fa-solid fa-lock"></i> Confirm Investment
+                </button>
+            `;
+            
+            modal.classList.add('active');
+            
+            // Add confirmation handler
+            setTimeout(() => {
+                document.getElementById('confirmInvestment')?.addEventListener('click', () => {
+                    showNotification('Investment successful! You will start earning daily returns.', 'success');
+                    modal.classList.remove('active');
+                });
+            }, 100);
+        }
+
+        // Show Notification
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const content = notification.querySelector('.notification-content');
+            
+            if (!notification || !content) return;
+            
+            // Set content and style
+            content.textContent = message;
+            notification.className = 'notification';
+            notification.classList.add(`notification-${type}`);
+            
+            // Show notification
+            notification.style.display = 'block';
+            notification.style.opacity = '1';
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 300);
+            }, 3000);
+        }
+
+        // Update UI based on state
+        function updateUI() {
+            // Update balance displays
+            document.querySelectorAll('.stat-value').forEach(el => {
+                if (el.textContent.includes('KES')) {
+                    // In a real app, update with actual balance
+                }
+            });
+        }
+
+        // Initialize Invest Page
+        function initializeInvestPage() {
+            // Filter buttons
+            const filterButtons = ['filterAll', 'filterPopular', 'filterHighROI', 'filterLowRisk'];
+            filterButtons.forEach(id => {
+                document.getElementById(id)?.addEventListener('click', function() {
+                    // Update active filter
+                    filterButtons.forEach(btnId => {
+                        const btn = document.getElementById(btnId);
+                        if (btn) {
+                            btn.classList.remove('btn-primary');
+                            btn.classList.add('btn-secondary');
+                        }
+                    });
+                    this.classList.remove('btn-secondary');
+                    this.classList.add('btn-primary');
+                    
+                    // Filter plans (simulated)
+                    showNotification(`Showing ${this.textContent} plans`, 'info');
+                });
+            });
+        }
+
+        // Initialize Deposit Page
+        function initializeDepositPage() {
+            const depositAmount = document.getElementById('depositAmount');
+            const paymentMethods = document.querySelectorAll('.payment-method');
+            const submitDeposit = document.getElementById('submitDeposit');
+            
+            // Payment method selection
+            paymentMethods.forEach(method => {
+                method.addEventListener('click', function() {
+                    paymentMethods.forEach(m => m.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Deposit submission
+            submitDeposit?.addEventListener('click', () => {
+                const amount = depositAmount.value;
+                if (!amount || amount < 200) {
+                    showNotification('Minimum deposit is KES 200', 'error');
+                    return;
+                }
+                
+                if (amount > 50000) {
+                    showNotification('Maximum deposit is KES 50,000', 'error');
+                    return;
+                }
+                
+                showNotification(`Deposit of KES ${amount} initiated!`, 'success');
+                depositAmount.value = '';
+                
+                // Simulate successful deposit
+                setTimeout(() => {
+                    showNotification('Deposit successful! Funds added to your wallet.', 'success');
+                }, 2000);
+            });
+        }
+
+        // Initialize Withdraw Page
+        function initializeWithdrawPage() {
+            const withdrawAmount = document.getElementById('withdrawAmount');
+            const withdrawError = document.getElementById('withdrawError');
+            const submitWithdraw = document.getElementById('submitWithdraw');
+            
+            // Amount validation
+            withdrawAmount?.addEventListener('input', () => {
+                const amount = parseInt(withdrawAmount.value) || 0;
+                
+                if (amount < 100) {
+                    withdrawError.textContent = 'Minimum withdrawal is KES 100';
+                    withdrawError.style.display = 'block';
+                    submitWithdraw.disabled = true;
+                } else if (amount > appState.balance) {
+                    withdrawError.textContent = `Insufficient balance. Available: KES ${appState.balance}`;
+                    withdrawError.style.display = 'block';
+                    submitWithdraw.disabled = true;
+                } else {
+                    withdrawError.style.display = 'none';
+                    submitWithdraw.disabled = false;
+                }
+            });
+            
+            // Withdrawal submission
+            submitWithdraw?.addEventListener('click', () => {
+                const amount = withdrawAmount.value;
+                showNotification(`Withdrawal request of KES ${amount} submitted!`, 'success');
+                withdrawAmount.value = '';
+                submitWithdraw.disabled = true;
+                
+                // Simulate processing
+                setTimeout(() => {
+                    showNotification('Withdrawal processed. Funds will be sent within 24-48 hours.', 'info');
+                }, 1500);
+            });
+        }
+
+        // Initialize Referrals Page
+        function initializeReferralsPage() {
+            const copyLinkBtn = document.getElementById('copyReferralLink');
+            
+            copyLinkBtn?.addEventListener('click', () => {
+                const link = 'https://kinya-drive-cash.lovable.app?ref=JOAKIM123';
+                navigator.clipboard.writeText(link).then(() => {
+                    showNotification('Referral link copied to clipboard!', 'success');
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                    showNotification('Failed to copy link', 'error');
+                });
+            });
+        }
+
+        // Initialize History Page
+        function initializeHistoryPage() {
+            // Filter buttons
+            const filters = ['filterAllHistory', 'filterDeposits', 'filterWithdrawals', 'filterInvestments', 'filterEarnings'];
+            filters.forEach(id => {
+                document.getElementById(id)?.addEventListener('click', function() {
+                    // Update active filter
+                    filters.forEach(btnId => {
+                        const btn = document.getElementById(btnId);
+                        if (btn) {
+                            btn.classList.remove('btn-primary');
+                            btn.classList.add('btn-secondary');
+                        }
+                    });
+                    this.classList.remove('btn-secondary');
+                    this.classList.add('btn-primary');
+                    
+                    showNotification(`Showing ${this.textContent} history`, 'info');
+                });
+            });
+        }
+
+        // Initialize Profile Page
+        function initializeProfilePage() {
+            // Profile save button
+            document.querySelector('#profile .btn-primary')?.addEventListener('click', () => {
+                showNotification('Profile updated successfully!', 'success');
+            });
+        }
+
+        // Initialize Support Page
+        function initializeSupportPage() {
+            // Live chat button
+            document.querySelector('#support .btn-primary')?.addEventListener('click', () => {
+                showNotification('Live chat session started!', 'success');
+                setTimeout(() => {
+                    alert('Support Agent: Hello! How can I help you today?');
+                }, 500);
+            });
+            
+            // Send message button
+            document.querySelector('#support .contact-form .btn-primary')?.addEventListener('click', () => {
+                showNotification('Message sent to support team!', 'success');
+            });
+        }
+
+        // Add CSS for notification
+        const notificationStyle = document.createElement('style');
+        notificationStyle.textContent = `
+            .notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #1e293b;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                border-left: 4px solid #3b82f6;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                z-index: 10000;
+                max-width: 400px;
+                transition: opacity 0.3s;
+            }
+            
+            .notification-success {
+                border-left-color: #22c55e;
+            }
+            
+            .notification-error {
+                border-left-color: #ef4444;
+            }
+            
+            .notification-info {
+                border-left-color: #3b82f6;
+            }
+            
+            .notification-content {
+                font-size: 0.9rem;
+            }
+            
+            .payment-method {
+                padding: 10px 15px;
+                border: 1px solid #334155;
+                border-radius: 6px;
+                background: #1e293b;
+                color: white;
+                cursor: pointer;
+                flex: 1;
+                text-align: center;
+                transition: all 0.3s;
+            }
+            
+            .payment-method.active {
+                background: #3b82f6;
+                border-color: #3b82f6;
+            }
+            
+            .payment-methods {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            
+            .btn-block {
+                width: 100%;
+                margin-top: 20px;
+            }
+            
+            .profile-avatar {
+                font-size: 4rem;
+                color: #3b82f6;
+                margin-right: 20px;
+            }
+            
+            .profile-header {
+                display: flex;
+                align-items: center;
+                margin-bottom: 30px;
+            }
+            
+            .support-card {
+                background: #1e293b;
+                padding: 20px;
+                border-radius: 12px;
+                border: 1px solid #334155;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            
+            .support-card i {
+                font-size: 2rem;
+                color: #3b82f6;
+                margin-bottom: 15px;
+            }
+            
+            .support-options {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                margin-bottom: 40px;
+            }
+            
+            .about-section {
+                background: #1e293b;
+                padding: 20px;
+                border-radius: 12px;
+                margin-bottom: 20px;
+                border: 1px solid #334155;
+            }
+            
+            .about-section h3 {
+                color: #3b82f6;
+                margin-bottom: 15px;
+            }
+        `;
+        document.head.appendChild(notificationStyle);
     </script>
 </body>
 </html>
